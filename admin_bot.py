@@ -1,3 +1,4 @@
+import datetime
 import discord
 from discord.ext import commands
 from disrank import RankCard
@@ -23,7 +24,7 @@ users = db['users']
 def get_user(user_id):
     user = users.find_one({"_id": user_id})
     if user is None:
-        user = {"_id": user_id, "xp": 0, "level": 1, "last_message_time": 0, "spam_count": 0}
+        user = {"_id": user_id, "xp": 0, "level": 1, "last_message_time": 0, "spam_count": 0}  # noqa: E501
         users.insert_one(user)
     return user
 
@@ -48,7 +49,7 @@ def on_thread_create(user_id, thread):
 
 
 def on_reaction_add(user_id, reaction):
-    user = get_user(user_id)
+    get_user(user_id)
     xp = 5
     if reaction.count > 5:
         xp += 5  # Bonus for popular reactions
@@ -140,27 +141,27 @@ async def warn(interaction: Interaction, member: Member, reason: str):
             user["warnings"] = []
         user["warnings"].append({"reason": reason, "time": time.time()})
         update_user(user)
-        await interaction.response.send_message(f"{member.name} has been warned for {reason}.")
+        await interaction.channel.send(f"{member.name} has been warned for {reason}.")  # noqa: E501
     else:
-        await interaction.response.send_message("You do not have permission to use this command.")
+        await interaction.channel.send("You do not have permission to use this command.")  # noqa: E501
 
 @bot.slash_command(description='View warnings of a user')
 async def view_warnings(interaction: Interaction, member: Member):
     if interaction.user.guild_permissions.administrator:
         user = get_user(member.id)
         if "warnings" not in user or len(user["warnings"]) == 0:
-            await interaction.response.send_message(f"{member.name} has no warnings.")
+            await interaction.channel.send(f"{member.name} has no warnings.")
             return
 
-        embed = Embed(title=f"{member.name}'s Warnings")
+        embed = embed(title=f"{member.name}'s Warnings")  # noqa: F821
         for warning in user["warnings"]:
             reason = warning["reason"]
-            timestamp = datetime.fromtimestamp(warning["time"]).strftime('%Y-%m-%d %H:%M:%S')
-            embed.add_field(name=f"Warned on {timestamp}", value=f"Reason: {reason}", inline=False)
+            timestamp = datetime.fromtimestamp(warning["time"]).strftime('%Y-%m-%d %H:%M:%S')  # noqa: E501
+            embed.add_field(name=f"Warned on {timestamp}", value=f"Reason: {reason}", inline=False)  # noqa: E501
 
-        await interaction.response.send_message(embed=embed)
+        await interaction.channel.send(embed=embed)
     else:
-        await interaction.response.send_message("You do not have permission to use this command.")
+        await interaction.channel.send("You are not allowed to use this command.")
     
     
 
@@ -169,7 +170,7 @@ async def view_warnings(interaction: Interaction, member: Member):
 @bot.describe(member='the member whose rank to check')
 async def rank(interaction: Interaction, member: Member = None):
     if member is None:
-        member = interaction.user  # If no member is specified, use the user who invoked the command
+        member = interaction.user  # If no member is specified, use the user who invoked the command  # noqa: E501
 
     user = get_user(member.id)
     xp = user["xp"]
@@ -183,7 +184,7 @@ async def rank(interaction: Interaction, member: Member = None):
     rank_card.set_rank(1)  # You'll need to calculate the user's rank
     rank_card.set_current_xp(xp)
     rank_card.set_required_xp(xp_to_next_level)
-    rank_card.set_background_image("url-of-your-background-image")  # Replace with your background image URL
+    rank_card.set_background_image("url-of-your-background-image")  # Replace with your background image URL  # noqa: E501
 
     rank_card_image = await rank_card.build()
 
@@ -194,7 +195,7 @@ async def rank(interaction: Interaction, member: Member = None):
 @bot.event
 async def on_ready():
     print(f"We have logged in as {bot.user}")
-    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name =f"{bot.command_prefix}help"))
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name =f"{bot.command_prefix}help"))  # noqa: E501
     print(discord.__version__)
 
 bot.run(token)
