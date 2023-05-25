@@ -1,10 +1,11 @@
 import datetime
 import discord
 from discord.ext import commands
-from disrank import RankCard
+from discord import app_commands, Member
+from disrank.generator import Generator
 from pymongo import MongoClient
-from discord import Interaction, Member
 import time
+#from config import TOKEN
 
 intents = discord.Intents.all()
 intents.typing = False
@@ -133,8 +134,8 @@ async def on_message(message):
 
 
 
-@bot.slash_command(description='Warn a user')
-async def warn(interaction: Interaction, member: Member, reason: str):
+@bot.tree.command(name='warn', description='Warn a user')
+async def warn(interaction: discord.Interaction, member: Member, reason: str):
     if interaction.user.guild_permissions.administrator:
         user = get_user(member.id)
         if "warnings" not in user:
@@ -145,8 +146,8 @@ async def warn(interaction: Interaction, member: Member, reason: str):
     else:
         await interaction.channel.send("You do not have permission to use this command.")  # noqa: E501
 
-@bot.slash_command(description='View warnings of a user')
-async def view_warnings(interaction: Interaction, member: Member):
+@bot.tree.command(name='view', description='View warnings of a user')
+async def view_warnings(interaction: discord.Interaction, member: Member):
     if interaction.user.guild_permissions.administrator:
         user = get_user(member.id)
         if "warnings" not in user or len(user["warnings"]) == 0:
@@ -166,30 +167,34 @@ async def view_warnings(interaction: Interaction, member: Member):
     
 
 
-@bot.command(description='Check your rank or the rank of another user')
-@bot.describe(member='the member whose rank to check')
-async def rank(interaction: Interaction, member: Member = None):
+@bot.tree.command(name='rank', description='Check a users rank')
+@app_commands.describe(member='Check your rank or the rank of another user')
+async def rank(ctx, member: discord.Member = None):
     if member is None:
-        member = interaction.user  # If no member is specified, use the user who invoked the command  # noqa: E501
+        member = ctx.author  # If no member is specified, use the user who invoked the command  # noqa: E501
 
     user = get_user(member.id)
     xp = user["xp"]
     level = user["level"]
     xp_to_next_level = ((1.2 ** (level + 1) - 1) * 100) / 0.2 - xp
 
-    rank_card = RankCard()
-    rank_card.set_avatar_url(member.avatar_url)
-    rank_card.set_name(member.name)
-    rank_card.set_level(level)
-    rank_card.set_rank(1)  # You'll need to calculate the user's rank
-    rank_card.set_current_xp(xp)
-    rank_card.set_required_xp(xp_to_next_level)
-    rank_card.set_background_image("url-of-your-background-image")  # Replace with your background image URL  # noqa: E501
+    args = {
+        'bg_image': '',  # Background image link
+        'profile_image': str(member.avatar_url),  # User profile picture link
+        'level': level,  # User current level
+        'current_xp': xp,  # Current level minimum xp
+        'user_xp': xp,  # User current xp
+        'next_xp': xp_to_next_level,  # xp required for next level
+        'user_position': 1,  # User position in leaderboard
+        'user_name': f'{member.name}#{member.discriminator}',  # user name with discriminator  # noqa: E501
+        'user_status': str(member.status),  # User status eg. online, offline, idle, streaming, dnd  # noqa: E501
+    }
 
-    rank_card_image = await rank_card.build()
+    image = Generator().generate_profile(**args)
 
-    await interaction.response.send_file(rank_card_image)
-
+    # In a discord command
+    file = discord.File(fp=image, filename='image.png')
+    await ctx.send(file=file)
 
 
 @bot.event
