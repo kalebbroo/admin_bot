@@ -8,9 +8,9 @@ import time
 #from config import TOKEN
 
 intents = discord.Intents.all()
-intents.typing = False
-intents.presences = False
-
+client = discord.Client(intents=intents)
+tree = app_commands.CommandTree(client)
+intents.messages = True
 bot = commands.Bot(command_prefix='/', intents=intents)
 token = "TOKEN"
 
