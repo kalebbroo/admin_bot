@@ -46,7 +46,7 @@ class AdminTools(commands.Cog):
 
     @app_commands.command(name='unmute', description='Unmute a member')
     @app_commands.checks.has_permissions(administrator=True)
-    async def unmute(self, interaction, reason: str = None):
+    async def unmute(self, interaction):
         member = member
         try:
             role = get(interaction.guild.roles, name="Muted")
@@ -75,7 +75,7 @@ class AdminTools(commands.Cog):
 
     @app_commands.command(name='change_role', description='Change a user\'s role')
     @app_commands.checks.has_permissions(administrator=True)
-    async def change_role(self, interaction, role, reason: str = None):
+    async def change_role(self, interaction, role: str = None):
         member = member
         try:
             await member.add_roles(role)
