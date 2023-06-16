@@ -25,7 +25,7 @@ users = db['users']
 async def load_extensions():
     for filename in os.listdir('./core'):
         if filename.endswith('.py'):
-            await bot.load_extension(f'cogs.{filename[:-3]}')
+            await bot.load_extension(f'core.{filename[:-3]}')
 
 
 @bot.event
