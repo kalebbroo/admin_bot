@@ -18,7 +18,7 @@ class XPCore(commands.Cog):
     def __init__(self, bot:commands.Bot):
         self.bot = bot
 
-    def get_user(self, user_id):
+    async def get_user(self, user_id):
         user = users.find_one({"_id": user_id})
         if user is None:
             user = {"_id": user_id, "xp": 0, "level": 1, "last_message_time": 0, "spam_count": 0, "warnings": [], "message_count": 0, "roles": []}
@@ -26,7 +26,7 @@ class XPCore(commands.Cog):
         return user
 
 
-    def update_user(self, user):
+    async def update_user(self, user):
         users.update_one({"_id": user["_id"]}, {"$set": user})
 
     @commands.Cog.listener()
@@ -37,7 +37,7 @@ class XPCore(commands.Cog):
             self.update_user(user)
 
 
-    def add_xp(self, user_id, xp):
+    async def add_xp(self, user_id, xp):
         user = self.get_user(user_id)
         user["xp"] += xp
         level = 1
@@ -117,11 +117,11 @@ class XPCore(commands.Cog):
         xp = 2 * duration  # Example: 2 XP per minute of voice chat
         self.add_xp(user_id, xp)
 
-    def on_daily_login(self, user_id):
+    async def on_daily_login(self, user_id):
         xp = 50  # Example: 50 XP for daily login
         self.add_xp(user_id, xp)
 
-    def on_weekly_challenge_completion(self, user_id):
+    async def on_weekly_challenge_completion(self, user_id):
         xp = 500  # Example: 500 XP for completing a weekly challenge
         self.add_xp(user_id, xp)
 
@@ -147,5 +147,5 @@ class XPCore(commands.Cog):
         self.update_user(user)
         self.add_xp(user_id, xp)
 
-def setup(bot:commands.Bot):
+async def setup(bot:commands.Bot):
     bot.add_cog(XPCore(bot))
