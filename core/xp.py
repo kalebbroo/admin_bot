@@ -49,7 +49,7 @@ class XPCore(commands.Cog):
         self.update_user(user)  # Update the database with the new XP
 
 
-    @commands.cog.listener()
+    @commands.Cog.listener()
     def on_thread_create(self, user_id, thread):
         xp = 50
         self.add_xp(user_id, xp)
