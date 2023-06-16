@@ -50,12 +50,12 @@ class XPCore(commands.Cog):
 
 
     @commands.Cog.listener()
-    def on_thread_create(self, user_id, thread):
+    async def on_thread_create(self, user_id, thread):
         xp = 50
         self.add_xp(user_id, xp)
 
     @commands.Cog.listener()
-    def on_reaction_add(self, user_id, reaction):
+    async def on_reaction_add(self, user_id, reaction):
         self.get_user(user_id)
         xp = 5
         if reaction.count > 5:
@@ -63,57 +63,57 @@ class XPCore(commands.Cog):
         self.add_xp(user_id, xp)
 
     @commands.Cog.listener()
-    def on_server_boost(self, user_id):
+    async def on_server_boost(self, user_id):
         xp = 500
         self.add_xp(user_id, xp)
 
     @commands.Cog.listener()
-    def on_slash_command(self, user_id, command):
+    async def on_slash_command(self, user_id, command):
         xp = 20
         self.add_xp(user_id, xp)
 
     @commands.Cog.listener()
-    def on_invite(self, user_id, invite):
+    async def on_invite(self, user_id, invite):
         xp = 200
         if invite.status == "accepted":
             xp += 50  # Bonus for successful invites
         self.add_xp(user_id, xp)
 
     @commands.Cog.listener()
-    def on_new_user_engage(self, user_id, message):
+    async def on_new_user_engage(self, user_id, message):
         xp = 30
         if message.reply_count > 5:
             xp += 10  # Bonus for engaging with new users
         self.add_xp(user_id, xp)
 
     @commands.Cog.listener()
-    def on_stream_start(self, user_id, stream):
+    async def on_stream_start(self, user_id, stream):
         xp = 3 * stream.duration
         if stream.viewer_count > 2:
             xp += stream.viewer_count  # Bonus for popular streams
         self.add_xp(user_id, xp)
 
     @commands.Cog.listener()
-    def on_event_participate(self, user_id, event):
+    async def on_event_participate(self, user_id, event):
         xp = 100
         if event.participant_count > 5:
             xp += 20  # Bonus for popular events
         self.add_xp(user_id, xp)
 
     @commands.Cog.listener()
-    def on_long_message(self, user_id, message):
+    async def on_long_message(self, user_id, message):
         xp = 20
         if len(message) > 200:
             xp += 1 * (len(message) - 200) // 10  # Bonus for long messages
         self.add_xp(user_id, xp)
 
     @commands.Cog.listener()
-    def on_message_pinned(self, user_id, message):
+    async def on_message_pinned(self, user_id, message):
         xp = 1000
         self.add_xp(user_id, xp)
 
     @commands.Cog.listener()
-    def on_voice_chat_participation(self, user_id, duration):
+    async def on_voice_chat_participation(self, user_id, duration):
         xp = 2 * duration  # Example: 2 XP per minute of voice chat
         self.add_xp(user_id, xp)
 
