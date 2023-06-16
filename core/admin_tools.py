@@ -28,7 +28,7 @@ class AdminTools(commands.Cog):
 
     @app_commands.command(name='mute', description='Mute a member')
     @app_commands.checks.has_permissions(administrator=True)
-    async def mute(self, interaction, member: Member, *, reason=None):
+    async def mute(self, interaction, member, reason: str = None):
         try:
             role = get(interaction.guild.roles, name="Muted")
             if not role:
