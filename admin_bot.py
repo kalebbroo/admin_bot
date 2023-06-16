@@ -1,7 +1,6 @@
 import os
 import discord
 from discord.ext import commands
-from discord import app_commands
 from pymongo import MongoClient
 from dotenv import load_dotenv
 
@@ -16,7 +15,6 @@ admin_channel = os.getenv('ADMIN_CHANNEL')
 
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix='/', intents=intents)
-tree = app_commands.CommandTree(bot)
 
 # Connect to your MongoDB
 client = MongoClient(mongodb)
