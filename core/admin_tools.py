@@ -110,4 +110,4 @@ class AdminTools(commands.Cog):
         await interaction.channel.send(embed=embed)
 
 async def setup(bot):
-    bot.add_cog(AdminTools(bot))
+    await bot.add_cog(AdminTools(bot))

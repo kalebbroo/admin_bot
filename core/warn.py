@@ -57,4 +57,4 @@ class WarnCore(commands.Cog):
             await ctx.send("You are not allowed to use this command.")
 
 async def setup(bot:commands.Bot):
-    bot.add_cog(WarnCore(bot))
+    await bot.add_cog(WarnCore(bot))

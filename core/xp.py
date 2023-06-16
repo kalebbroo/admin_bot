@@ -148,4 +148,4 @@ class XPCore(commands.Cog):
         self.add_xp(user_id, xp)
 
 async def setup(bot:commands.Bot):
-    bot.add_cog(XPCore(bot))
+    await bot.add_cog(XPCore(bot))

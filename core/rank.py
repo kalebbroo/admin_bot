@@ -69,4 +69,4 @@ class RankCore(commands.Cog):
 
 
 async def setup(bot):
-    bot.add_cog(RankCore(bot))
+    await bot.add_cog(RankCore(bot))
