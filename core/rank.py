@@ -1,3 +1,4 @@
+import os
 import discord
 from discord.ext import commands
 from discord import app_commands, Member, Embed
@@ -7,6 +8,7 @@ from pymongo import MongoClient
 class RankCore(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        mongodb = os.getenv('MONGODB_URI')
         self.client = MongoClient(mongodb)  # Use the same MongoDB client
         self.db = self.client['discord_bot']  # Use the same database
         self.users = self.db['users']  # Use the same collection
