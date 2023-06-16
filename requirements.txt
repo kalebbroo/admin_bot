@@ -2,3 +2,4 @@ discord.py
 pymongo
 disrank
 python-dotenv
+requests
