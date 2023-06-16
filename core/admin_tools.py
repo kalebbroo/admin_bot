@@ -2,7 +2,7 @@ from mee6_py_api import API
 from discord.ext import commands
 from discord import app_commands, Member, Embed, Colour
 from discord.utils import get
-from discord.app_commands import OptionType
+#from discord.app_commands import OptionType
 
 
 class AdminTools(commands.Cog):
@@ -71,7 +71,7 @@ class AdminTools(commands.Cog):
 
     @app_commands.command(name='change_role', description='Change a user\'s role')
     @app_commands.has_permissions(administrator=True)
-    async def change_role(self, interaction, member: Member, role: OptionType.role):
+    async def change_role(self, interaction, member: Member, role):
         try:
             await member.add_roles(role)
             await interaction.channel.send(f"{member.mention} has been given the {role.name} role.")
