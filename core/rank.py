@@ -68,5 +68,5 @@ class RankCore(commands.Cog):
         await interaction.response.send_message(embed=embed)
 
 
-def setup(bot):
+async def setup(bot):
     bot.add_cog(RankCore(bot))

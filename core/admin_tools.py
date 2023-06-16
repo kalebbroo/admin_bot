@@ -103,5 +103,5 @@ class AdminTools(commands.Cog):
         embed.add_field(name="Roles", value=len(member.roles))
         await interaction.channel.send(embed=embed)
 
-def setup(bot):
+async def setup(bot):
     bot.add_cog(AdminTools(bot))

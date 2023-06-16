@@ -16,14 +16,14 @@ class WarnCore(commands.Cog):
         self.bot = bot
         self.users = users
 
-    def get_user(self, user_id):
+    async def get_user(self, user_id):
         user = self.users.find_one({"_id": user_id})
         if user is None:
             user = {"_id": user_id, "xp": 0, "level": 1, "last_message_time": 0, "spam_count": 0, "warnings": []}
             self.users.insert_one(user)
         return user
 
-    def update_user(self, user):
+    async def update_user(self, user):
         self.users.update_one({"_id": user["_id"]}, {"$set": user})
 
     @app_commands.command(name='warn', description='Warn a user')
@@ -56,5 +56,5 @@ class WarnCore(commands.Cog):
         else:
             await ctx.send("You are not allowed to use this command.")
 
-def setup(bot:commands.Bot):
+async def setup(bot:commands.Bot):
     bot.add_cog(WarnCore(bot))
