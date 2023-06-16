@@ -28,13 +28,14 @@ class AdminTools(commands.Cog):
 
     @app_commands.command(name='mute', description='Mute a member')
     @app_commands.checks.has_permissions(administrator=True)
-    async def mute(self, interaction, member, reason: str = None):
+    async def mute(self, interaction, reason: str = None):
         try:
             role = get(interaction.guild.roles, name="Muted")
             if not role:
                 role = await interaction.guild.create_role(name="Muted")
                 for channel in interaction.guild.channels:
                     await channel.set_permissions(role, speak=False, send_messages=False)
+            member = member
             await member.add_roles(role, reason=reason)
             embed = Embed(title="Mute", description=f"{member.mention} has been muted.", color=Colour.red())
             if reason:
@@ -45,7 +46,8 @@ class AdminTools(commands.Cog):
 
     @app_commands.command(name='unmute', description='Unmute a member')
     @app_commands.checks.has_permissions(administrator=True)
-    async def unmute(self, interaction, member: Member):
+    async def unmute(self, interaction, reason: str = None):
+        member = member
         try:
             role = get(interaction.guild.roles, name="Muted")
             if role in member.roles:
@@ -59,19 +61,22 @@ class AdminTools(commands.Cog):
 
     @app_commands.command(name='kick', description='Kick a member from the server')
     @app_commands.checks.has_permissions(administrator=True)
-    async def kick(self, interaction, member: Member, *, reason=None):
+    async def kick(self, interaction, reason: str = None):
+        member = member
         await member.kick(reason=reason)
         await interaction.channel.send(f"{member.mention} has been kicked for {reason}.")
 
     @app_commands.command(name='ban', description='Ban a member from the server')
     @app_commands.checks.has_permissions(administrator=True)
-    async def ban(self, interaction, member: Member, *, reason=None):
+    async def ban(self, interaction, reason: str = None):
+        member = member
         await member.ban(reason=reason)
         await interaction.channel.send(f"{member.mention} has been banned for {reason}.")
 
     @app_commands.command(name='change_role', description='Change a user\'s role')
     @app_commands.checks.has_permissions(administrator=True)
-    async def change_role(self, interaction, member: Member, role):
+    async def change_role(self, interaction, role, reason: str = None):
+        member = member
         try:
             await member.add_roles(role)
             await interaction.channel.send(f"{member.mention} has been given the {role.name} role.")
@@ -97,7 +102,8 @@ class AdminTools(commands.Cog):
 
     @app_commands.command(name='user_stats', description='Display user stats')
     @app_commands.checks.has_permissions(administrator=True)
-    async def user_stats(self, interaction, member: Member):
+    async def user_stats(self, interaction):
+        member = member
         embed = Embed(title=f"{member.name} Stats")
         embed.add_field(name="Joined At", value=member.joined_at)
         embed.add_field(name="Roles", value=len(member.roles))
