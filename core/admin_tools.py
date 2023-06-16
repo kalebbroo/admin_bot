@@ -86,7 +86,7 @@ class AdminTools(commands.Cog):
 
     @app_commands.command(name='send_message', description='Send a message to all members')
     @app_commands.checks.has_permissions(administrator=True)
-    async def send_message(self, interaction, *, message):
+    async def send_message(self, interaction, *, message: str = None):
         for member in interaction.guild.members:
             if not member.bot:
                 await member.send(message)
