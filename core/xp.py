@@ -21,12 +21,21 @@ class XPCore(commands.Cog):
     def get_user(self, user_id):
         user = users.find_one({"_id": user_id})
         if user is None:
-            user = {"_id": user_id, "xp": 0, "level": 1, "last_message_time": 0, "spam_count": 0}
+            user = {"_id": user_id, "xp": 0, "level": 1, "last_message_time": 0, "spam_count": 0, "warnings": [], "message_count": 0, "roles": []}
             users.insert_one(user)
         return user
 
+
     def update_user(self, user):
         users.update_one({"_id": user["_id"]}, {"$set": user})
+
+    @commands.Cog.listener()
+    async def on_member_update(self, before, after):
+        if before.roles != after.roles:
+            user = self.get_user(after.id)
+            user["roles"] = [role.id for role in after.roles]
+            self.update_user(user)
+
 
     def add_xp(self, user_id, xp):
         user = self.get_user(user_id)
@@ -37,7 +46,8 @@ class XPCore(commands.Cog):
         if level > user["level"]:
             user["level"] = level
             print(f"User {user_id} has leveled up to level {level}!")
-        self.update_user(user)
+        self.update_user(user)  # Update the database with the new XP
+
 
     @commands.cog.listener()
     def on_thread_create(self, user_id, thread):
@@ -133,6 +143,7 @@ class XPCore(commands.Cog):
         else:
             user["spam_count"] = 0
         user["last_message_time"] = time.time()
+        user["message_count"] += 1  # Increment message count
         self.update_user(user)
         self.add_xp(user_id, xp)
 

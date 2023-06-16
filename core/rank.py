@@ -7,9 +7,10 @@ from pymongo import MongoClient
 class RankCore(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.client = MongoClient('mongodb://localhost:27017/')  # Connect to your MongoDB server
-        self.db = self.client['your_database_name']  # Select your database
-        self.users = self.db['users']  # Select your collection
+        self.client = MongoClient(mongodb)  # Use the same MongoDB client
+        self.db = self.client['discord_bot']  # Use the same database
+        self.users = self.db['users']  # Use the same collection
+
 
     @app_commands.command(name='rank', description='Check a users rank')
     async def rank(self, interaction, member: discord.Member = None):
