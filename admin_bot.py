@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 load_dotenv()  # take environment variables from .env.
 
-bot_token = os.getenv('DISCORD_TOKEN')
+bot_token = os.getenv('BOT_TOKEN')
 mongodb = os.getenv('MONGODB_URI')
 admin_role = os.getenv('ADMIN_ID')
 user_role = os.getenv('USER_ID')
