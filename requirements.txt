@@ -3,3 +3,4 @@ pymongo
 disrank
 python-dotenv
 requests
+mee6_py_api
