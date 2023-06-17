@@ -6,11 +6,11 @@ services:
     depends_on:
       - db
   db:
-    image: mongo
+    image: mongo:latest
     restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_ROOT_PASSWORD: root
     volumes:
       - admin_bot_db:/data/db
 
