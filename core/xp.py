@@ -1,33 +1,28 @@
 import discord
 from discord.ext import commands
-import os
-from pymongo import MongoClient
-from datetime import datetime
+from admin_bot import load_db
 import time
-
-
-# Connect to your MongoDB
-client = MongoClient('mongodb://localhost:27017/')
-db = client['discord_bot']
-users = db['users']
-        
-
-
 
 class XPCore(commands.Cog):
     def __init__(self, bot:commands.Bot):
         self.bot = bot
+        # Connect to your MongoDB
+        async def connect_to_db():
+            db = await load_db()
+            self.users = db['users']
+        self.bot.loop.create_task(connect_to_db())
+        
 
     async def get_user(self, user_id):
-        user = users.find_one({"_id": user_id})
+        user = self.users.find_one({"_id": user_id})
         if user is None:
             user = {"_id": user_id, "xp": 0, "level": 1, "last_message_time": 0, "spam_count": 0, "warnings": [], "message_count": 0, "roles": []}
-            users.insert_one(user)
+            self.users.insert_one(user)
         return user
 
 
     async def update_user(self, user):
-        users.update_one({"_id": user["_id"]}, {"$set": user})
+        self.users.update_one({"_id": user["_id"]}, {"$set": user})
 
     @commands.Cog.listener()
     async def on_member_update(self, before, after):

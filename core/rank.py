@@ -3,15 +3,16 @@ import discord
 from discord.ext import commands
 from discord import app_commands, Member, Embed
 from disrank.generator import Generator
-from pymongo import MongoClient
+from admin_bot import load_db
 
 class RankCore(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        mongodb = os.getenv('MONGODB_URI')
-        self.client = MongoClient(mongodb)  # Use the same MongoDB client
-        self.db = self.client['discord_bot']  # Use the same database
-        self.users = self.db['users']  # Use the same collection
+        # Connect to your MongoDB
+        async def connect_to_db():
+            db = await load_db()
+            self.users = db['users']
+        self.bot.loop.create_task(connect_to_db())
 
 
     @app_commands.command(name='rank', description='Check a users rank')
@@ -23,7 +24,7 @@ class RankCore(commands.Cog):
                 member = interaction.author  # If no member is specified, use the user who invoked the command
 
             user_id = member.id
-            user = self.bot.get_cog('XPCore').get_user(user_id)
+            user = await self.bot.get_cog('XPCore').get_user(user_id)
             if user is None:
                 await interaction.channel.send("User not found in the database.")
                 return

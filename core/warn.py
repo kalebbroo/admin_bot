@@ -2,18 +2,18 @@ import discord
 from discord.ext import commands
 from discord import app_commands
 from datetime import datetime
-from pymongo import MongoClient
 import time
+from admin_bot import load_db
 
-# Connect to your MongoDB
-client = MongoClient('mongodb://localhost:27017/')
-db = client['discord_bot']
-users = db['users']
 
 class WarnCore(commands.Cog):
     def __init__(self, bot:commands.Bot):
         self.bot = bot
-        self.users = users
+        # Connect to your MongoDB
+        async def connect_to_db():
+            db = await load_db()
+            self.users = db['users']
+        self.bot.loop.create_task(connect_to_db())
 
     async def get_user(self, user_id):
         user = self.users.find_one({"_id": user_id})
