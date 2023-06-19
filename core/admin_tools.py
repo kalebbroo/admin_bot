@@ -1,6 +1,6 @@
 from mee6_py_api import API
 from discord.ext import commands
-from discord import app_commands, Member, Embed, Colour
+from discord import app_commands, Embed, Colour
 from discord.utils import get
 import discord
 #from discord.app_commands import OptionType

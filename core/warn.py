@@ -30,12 +30,11 @@ class WarnCore(commands.Cog):
     @app_commands.describe(reason='The reason for the warn')
     @app_commands.checks.has_permissions(administrator=True)
     async def warn(self, interaction, member: discord.Member, reason: str):
-        if interaction.author.guild_permissions.administrator:
-            user = await self.get_user(member.id)
-            user["warnings"] = user.get("warnings", [])
-            user["warnings"].append({"reason": reason, "time": time.time()})
-            await self.update_user(user)
-            await interaction.channel.send(f"{member.name} has been warned for {reason}.")
+        user = await self.get_user(member.id)
+        user["warnings"] = user.get("warnings", [])
+        user["warnings"].append({"reason": reason, "time": time.time()})
+        await self.update_user(user)
+        await interaction.channel.send(f"{member.name} has been warned for {reason}.")
 
     @app_commands.command(name='view', description='View warnings of a user')
     @app_commands.describe(member='The member to view warnings of')
