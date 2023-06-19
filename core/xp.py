@@ -127,7 +127,7 @@ class XPCore(commands.Cog):
         if message.author == self.bot.user:
             return
         user_id = message.author.id
-        user = self.get_user(user_id)
+        user = await self.get_user(user_id)
         xp = 10
         if len(message.content) > 100:
             xp += 5
