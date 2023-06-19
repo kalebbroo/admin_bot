@@ -16,15 +16,19 @@ class AdminTools(commands.Cog):
         try:
             self.api = API(str(interaction.guild.id))
             leaderboard_page = self.api.get_leaderboard_page()
+            if leaderboard_page is None or not leaderboard_page.players:
+                await interaction.channel.send("No data available from the Mee6 bot for this server.")
+                return
             for player in leaderboard_page.players:
                 user_id = int(player.id)  # Convert the user ID to int
-                user = self.get_user(user_id)
+                user = await self.bot.get_cog('XPCore').get_user(user_id)
                 user["xp"] = player.xp
                 user["level"] = player.level
-                self.update_user(user)
+                await self.bot.get_cog('XPCore').update_user(user)
             await interaction.channel.send("XP and level data has been imported from the Mee6 leaderboard.")
         except Exception as e:
             await interaction.channel.send(f"An error occurred: {e}")
+
 
 
     @app_commands.command(name='mute', description='Mute a member')

@@ -15,13 +15,15 @@ class RankCore(commands.Cog):
 
 
     @app_commands.command(name='rank', description='Check a users rank')
+    @app_commands.describe(member='The member to check the rank of')
     async def rank(self, interaction, member: discord.Member = None):
         try:
             await interaction.response.defer()
             if member is None:
                 member = interaction.author  # If no member is specified, use the user who invoked the command
 
-            user = self.get_user(member.id)
+            user_id = member.id
+            user = self.bot.get_cog('XPCore').get_user(user_id)
             if user is None:
                 await interaction.channel.send("User not found in the database.")
                 return

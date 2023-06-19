@@ -1,7 +1,6 @@
 import discord
 from discord.ext import commands
 from discord import app_commands
-from discord import Member
 from datetime import datetime
 from pymongo import MongoClient
 import time
@@ -27,34 +26,33 @@ class WarnCore(commands.Cog):
         self.users.update_one({"_id": user["_id"]}, {"$set": user})
 
     @app_commands.command(name='warn', description='Warn a user')
-    async def warn(self, ctx, member: Member, reason: str):
-        if ctx.author.guild_permissions.administrator:
-            user = self.get_user(member.id)
+    @app_commands.describe(member='The member to warn')
+    @app_commands.describe(reason='The reason for the warn')
+    @app_commands.checks.has_permissions(administrator=True)
+    async def warn(self, interaction, member: discord.Member, reason: str):
+        if interaction.author.guild_permissions.administrator:
+            user = await self.get_user(member.id)
             user["warnings"] = user.get("warnings", [])
             user["warnings"].append({"reason": reason, "time": time.time()})
-            self.update_user(user)
-            await ctx.send(f"{member.name} has been warned for {reason}.")
-        else:
-            await ctx.send("You do not have permission to use this command.")
+            await self.update_user(user)
+            await interaction.channel.send(f"{member.name} has been warned for {reason}.")
 
     @app_commands.command(name='view', description='View warnings of a user')
-    async def view_warnings(self, ctx, member: Member):
-        if ctx.author.guild_permissions.administrator:
-            user = self.get_user(member.id)
-            warnings = user.get("warnings", [])
-            if len(warnings) == 0:
-                await ctx.send(f"{member.name} has no warnings.")
-                return
+    @app_commands.describe(member='The member to view warnings of')
+    async def view_warnings(self, interaction, member: discord.Member):
+        user = await self.get_user(member.id)
+        warnings = user.get("warnings", [])
+        if len(warnings) == 0:
+            await interaction.channel.send(f"{member.name} has no warnings.")
+            return
 
-            embed = discord.Embed(title=f"{member.name}'s Warnings")
-            for warning in warnings:
-                reason = warning["reason"]
-                timestamp = datetime.fromtimestamp(warning["time"]).strftime('%Y-%m-%d %H:%M:%S')
-                embed.add_field(name=f"Warned on {timestamp}", value=f"Reason: {reason}", inline=False)
+        embed = discord.Embed(title=f"{member.name}'s Warnings")
+        for warning in warnings:
+            reason = warning["reason"]
+            timestamp = datetime.fromtimestamp(warning["time"]).strftime('%Y-%m-%d %H:%M:%S')
+            embed.add_field(name=f"Warned on {timestamp}", value=f"Reason: {reason}", inline=False)
 
-            await ctx.send(embed=embed)
-        else:
-            await ctx.send("You are not allowed to use this command.")
+        await interaction.channel.send(embed=embed)
 
 async def setup(bot:commands.Bot):
     await bot.add_cog(WarnCore(bot))
