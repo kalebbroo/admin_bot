@@ -28,19 +28,18 @@ class AdminTools(commands.Cog):
 
 
     @app_commands.command(name='mute', description='Mute a member')
-    @app_commands.describe(Member='The member to mute')
+    @app_commands.describe(user='The member to mute')
     @app_commands.describe(reason='The reason for the mute')
     @app_commands.checks.has_permissions(administrator=True)
-    async def mute(self, interaction, member: discord.Member, reason: str = None):
+    async def mute(self, interaction, user: discord.Member, reason: str = None):
         try:
             role = get(interaction.guild.roles, name="Muted")
             if not role:
                 role = await interaction.guild.create_role(name="Muted")
                 for channel in interaction.guild.channels:
                     await channel.set_permissions(role, speak=False, send_messages=False)
-            member = discord.Member
-            await member.add_roles(role, reason=reason)
-            embed = Embed(title="Mute", description=f"{member.mention} has been muted.", color=Colour.red())
+            await user.add_roles(role, reason=reason)
+            embed = Embed(title="Mute", description=f"{user.mention} has been muted.", color=Colour.red())
             if reason:
                 embed.add_field(name="Reason", value=reason)
             await interaction.channel.send(embed=embed)
