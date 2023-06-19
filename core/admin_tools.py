@@ -48,7 +48,6 @@ class AdminTools(commands.Cog):
 
     @app_commands.command(name='unmute', description='Unmute a member')
     @app_commands.describe(user='The member to mute')
-    @app_commands.describe(reason='The reason for the mute')
     @app_commands.checks.has_permissions(administrator=True)
     async def unmute(self, interaction, user: discord.Member):
         try:
