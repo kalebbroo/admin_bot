@@ -14,15 +14,15 @@ class XPCore(commands.Cog):
         
 
     async def get_user(self, user_id):
-        user = self.users.find_one({"_id": user_id})
+        user = await self.users.find_one({"_id": user_id})
         if user is None:
             user = {"_id": user_id, "xp": 0, "level": 1, "last_message_time": 0, "spam_count": 0, "warnings": [], "message_count": 0, "roles": []}
-            self.users.insert_one(user)
+            await self.users.insert_one(user)
         return user
 
 
     async def update_user(self, user):
-        self.users.update_one({"_id": user["_id"]}, {"$set": user})
+        await self.users.update_one({"_id": user["_id"]}, {"$set": user})
 
     @commands.Cog.listener()
     async def on_member_update(self, before, after):
