@@ -29,7 +29,7 @@ class XPCore(commands.Cog):
         if before.roles != after.roles:
             user = await self.get_user(after.id)
             user["roles"] = [role.id for role in after.roles]
-            self.update_user(user)
+            await self.update_user(user)
 
 
     async def add_xp(self, user_id, xp):
