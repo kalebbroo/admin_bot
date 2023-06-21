@@ -8,7 +8,8 @@ load_dotenv()  # take environment variables from .env.
 async def load_db():
     try:
         # Connect to your MongoDB
-        mongodb = os.getenv('MONGODB_URI')
+        mongodb = os.getenv('MONGODB')
+        print(f"Connecting to MongoDB at {mongodb}")
         client = MongoClient(mongodb)
         db = client.admin_bot_db
         return db
