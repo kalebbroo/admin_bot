@@ -6,16 +6,17 @@ import time
 class XPCore(commands.Cog):
     def __init__(self, bot:commands.Bot):
         self.bot = bot
-        # Connect to your MongoDB
-        async def connect_to_db():
-            db = await load_db()
-            if db is None:
-                print("Failed to connect to the database.")
-            else:
-                self.users = db['users']
+        self.users = None  # Initialize the users attribute to None
 
+    async def connect_to_db(self):
+        db = await load_db()
+        if db is None:
+            print("Failed to connect to the database.")
+        else:
+            self.users = db['users']
 
     async def get_user(self, user_id):
+        await self.connect_to_db()
         if self.users is None:
             print("Database connection not established.")
             return None
@@ -129,6 +130,7 @@ class XPCore(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
+        await self.connect_to_db()
         if message.author == self.bot.user:
             return
         user_id = message.author.id
