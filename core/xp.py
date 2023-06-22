@@ -9,11 +9,16 @@ class XPCore(commands.Cog):
         # Connect to your MongoDB
         async def connect_to_db():
             db = await load_db()
-            self.users = db['users']
-        self.bot.loop.create_task(connect_to_db())
-        
+            if db is None:
+                print("Failed to connect to the database.")
+            else:
+                self.users = db['users']
+
 
     async def get_user(self, user_id):
+        if self.users is None:
+            print("Database connection not established.")
+            return None
         user = await self.users.find_one({"_id": user_id})
         if user is None:
             user = {"_id": user_id, "xp": 0, "level": 1, "last_message_time": 0, "spam_count": 0, "warnings": [], "message_count": 0, "roles": []}
