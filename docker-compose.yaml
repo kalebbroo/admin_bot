@@ -3,20 +3,8 @@ version: '3.1'
 services:
   bot:
     build: .
-    depends_on:
-      - db
-    ports:
-      - "8080:80"
-  db:
-    image: mongo:latest
-    restart: always
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: password
     volumes:
-      - admin_bot_db:/data/db
-    ports:
-      - "28017:28017"
+      - ./data:/data  # Mount the /data directory in the container to the ./data directory on the host
 
 volumes:
-  admin_bot_db:
+  data:  # Define a named volume for the SQLite database file

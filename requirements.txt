@@ -1,6 +1,5 @@
 discord.py
-pymongo
-disrank
+#discordlevelingcard
 python-dotenv
 requests
 mee6_py_api
